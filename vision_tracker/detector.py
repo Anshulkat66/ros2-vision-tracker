@@ -12,12 +12,19 @@ class Detector(Node):
     def __init__(self):
         super().__init__('detector')
         self.bridge = CvBridge()
+        self.depth_frame = None
+        self.subscription = self.create_subscription(
+            Image,
+            '/world/empty/model/follower_vehicle/link/chassis/sensor/depth_camera/depth_image',
+            self.depth_image_callback,
+            10
+        )
         self.subscription = self.create_subscription(
             Image,
             '/world/empty/model/follower_vehicle/link/chassis/sensor/rgb_camera/image',
-            self.image_callback,
+            self.rgb_image_callback,
             10
-        )
+            )
         self.cmd_pub = self.create_publisher(
             Twist,
             '/cmd_vel',
@@ -25,12 +32,24 @@ class Detector(Node):
         )
         self.get_logger().info("Detector node started")
 
-    def image_callback(self, msg):
+
+    def depth_image_callback(self,msg):
+        self.get_logger().info("Depth callback")
+        self.depth_frame = self.bridge.imgmsg_to_cv2(
+        msg,
+        desired_encoding="passthrough")
+    
+
+    def rgb_image_callback(self, msg):
+        self.get_logger().info("RGB callback")
 
         frame = self.bridge.imgmsg_to_cv2(
             msg,
             desired_encoding='bgr8'
         )
+
+        if self.depth_frame is None:
+            return
 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -76,23 +95,35 @@ class Detector(Node):
                     -1
                 )
 
-
+                #angular error :
                 height,width,_ = frame.shape
 
                 center_x = width//2
 
                 error = cx - center_x
 
+                distance = self.depth_frame[cy,cx]
+                self.get_logger().info(f"Distance = {distance}")
+                desired_distance = 1
 
-                twist.linear.x = 0.0
+                distance_error = distance - desired_distance
 
-                if abs(error) < 20:
+                if abs(distance_error) < 1:
+                    twist.linear.x = 0.0
+                else:
+                    twist.linear.x = -0.3 * distance_error
+                    twist.linear.x = max(
+                    min(-0.3 * distance_error, 0.7),
+                    -0.7
+)
+
+                if abs(error) < 10:
 
                     twist.angular.z = 0.0
 
                 else:
 
-                    twist.angular.z = 0.005 * error
+                    twist.angular.z = 0.0015 * error
 
                     twist.angular.z = max(
                         min(twist.angular.z, 1.0),
@@ -100,7 +131,7 @@ class Detector(Node):
                     )
 
                 self.cmd_pub.publish(twist)
-                self.get_logger().info(f"cx={cx}, error={error}, rotation={twist.angular.z}")
+                self.get_logger().info(f"cx={cx}, ang_error={error}, rotation={twist.angular.z}, distance_error={distance_error}, linear_speed={twist.linear.x}")
 
 
         # ALWAYS display

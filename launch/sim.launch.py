@@ -67,8 +67,8 @@ def generate_launch_description():
                 package='ros_gz_bridge',
                 executable='parameter_bridge',
                 arguments=[
-                    '/world/empty/model/follower_vehicle/link/chassis/sensor/camera/depth_image@sensor_msgs/msg/Image@gz.msgs.Image',
-                    '/world/empty/model/follower_vehicle/link/chassis/sensor/camera/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo',
+                    '/world/empty/model/follower_vehicle/link/chassis/sensor/depth_camera/depth_image@sensor_msgs/msg/Image[gz.msgs.Image',
+                    '/world/empty/model/follower_vehicle/link/chassis/sensor/depth_camera/camera_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo',
 
                     # RGB image  <-- ADD THIS
                     '/world/empty/model/follower_vehicle/link/chassis/sensor/rgb_camera/image@sensor_msgs/msg/Image@gz.msgs.Image',

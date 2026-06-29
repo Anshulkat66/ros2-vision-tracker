@@ -5,7 +5,7 @@
     <link name='chassis'>
       <pose frame=''>-0.151427 0 0.35 0 0 0</pose>
       <inertial>
-        <mass>1.14395</mass>
+        <mass>10</mass>
         <inertia>
           <ixx>0.126164</ixx>
           <ixy>0</ixy>
@@ -71,8 +71,7 @@
       </collision>
       <sensor name="rgb_camera" type="camera">
 
-          <camera name="rgb">
-
+          <camera>
               <horizontal_fov>1.047</horizontal_fov>
 
               <image>
@@ -92,11 +91,35 @@
           <update_rate>30</update_rate>
 
       </sensor>
+
+
+      <sensor name="depth_camera" type="depth">
+
+          <camera>
+
+              <horizontal_fov>1.047</horizontal_fov>
+
+              <image>
+                  <width>320</width>
+                  <height>240</height>
+              </image>
+
+              <clip>
+                  <near>0.1</near>
+                  <far>100</far>
+              </clip>
+
+          </camera>
+
+          <always_on>true</always_on>
+          <update_rate>30</update_rate>
+
+      </sensor>
     </link>
     <link name='wheel_1'>
       <pose frame=''>0.554283 0.625029 0.3 1.5707 0 0</pose>
       <inertial>
-        <mass>2</mass>
+        <mass>0.5</mass>
         <inertia>
           <ixx>0.145833</ixx>
           <ixy>0</ixy>
@@ -166,7 +189,7 @@
     <link name='wheel_2'>
       <pose frame=''>0.554282 -0.625029 0.3 1.5707 0 0</pose>      
       <inertial>
-        <mass>2</mass>
+        <mass>0.5</mass>
         <inertia>
           <ixx>0.145833</ixx>
           <ixy>0</ixy>
@@ -236,7 +259,7 @@
     <link name='caster'>
         <pose>-0.957138 0 0.2 0 0 0</pose>
       <inertial>
-        <mass>1</mass>
+        <mass>0.1</mass>
         <inertia>
           <ixx>0.1</ixx>
           <ixy>0</ixy>
@@ -274,8 +297,8 @@
         <surface>
           <friction>
             <ode>
-              <mu>1</mu>
-              <mu2>1</mu2>
+              <mu>0.3</mu>
+              <mu2>0.3</mu2>
               <fdir1>0 0 0</fdir1>
               <slip1>0</slip1>
               <slip2>0</slip2>
